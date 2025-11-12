@@ -24,12 +24,11 @@ def get_valid_names(names, rules):
     return {'valid': valid, 'sum': s}
 
 def generate_names(name, rules):
-    if name[-1] in rules:
-        for letter in rules[name[-1]]:
-            if 7 <= len(name + letter) <= 11:
-                yield name + letter
-            if len(name + letter) < 11:
-                yield from generate_names(name + letter, rules)
+    for letter in rules.get(name[-1]):
+        if 7 <= len(name + letter) <= 11:
+            yield name + letter
+        if len(name + letter) < 11:
+            yield from generate_names(name + letter, rules)
 
 
 names, rules = get_input('7_1')
