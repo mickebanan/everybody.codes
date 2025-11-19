@@ -1,11 +1,7 @@
 import itertools
 
 def check_similarity(row1, row2):
-    s = 0
-    for i, c in enumerate(row1):
-        if c == row2[i]:
-            s += 1
-    return s
+    return sum(1 for i, c in enumerate(row1) if c == row2[i])
 
 def get_relationships(data):
     def is_compatible(c, p1, p2):
@@ -35,8 +31,7 @@ data = dict(row.split(':') for row in open('inputs/9_3.txt').read().split('\n'))
 relationships = get_relationships(data)
 graph = {id_: set() for id_ in data}
 for c, (p1, p2) in relationships:
-    graph[c].add(p1)
-    graph[c].add(p2)
+    graph[c] |= {p1, p2}
     graph[p1].add(c)
     graph[p2].add(c)
 visited = set()
