@@ -3,9 +3,9 @@ def make_wheel(data):
     left = []
     for i, (start, stop) in enumerate(data):
         if i % 2 == 0:
-            wheel.extend(list(range(start, stop + 1)))
+            wheel.extend(range(start, stop + 1))
         else:
-            left.extend(list(range(start, stop + 1)))
+            left.extend(range(start, stop + 1))
     return wheel + list(reversed(left))
 
 data = list(map(int, open('inputs/13_1.txt').read().split('\n')))
