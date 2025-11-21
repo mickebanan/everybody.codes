@@ -1,15 +1,15 @@
 import itertools
 
-def count_active(data):
-    return sum(row.count('#') for row in data)
-
 def work(data, rounds, pattern=None):
+    def count_active(data):
+        return sum(row.count('#') for row in data)
+
     def move(y, x):
         for dy, dx in ((-1, -1), (-1, 1), (1, -1), (1, 1)):
             if 0 <= y + dy < ymax and 0 <= x + dx < xmax:
                 yield y + dy, x + dx
 
-    def match(pattern):
+    def match():
         for y in range(len(pattern)):
             for x in range(len(pattern[0])):
                 if pattern[y][x] != data[y + 13][x + 13]:
@@ -19,10 +19,9 @@ def work(data, rounds, pattern=None):
     ymax, xmax = len(data), len(data[0])
     sums = {'p12': 0, 'p3': 0}
     part_3 = []
-    i = 0
     diffs = []
     done = False
-    while i < rounds:
+    for i in range(rounds):
         _data = []
         for y in range(ymax):
             row = ''
@@ -32,29 +31,25 @@ def work(data, rounds, pattern=None):
             _data.append(row)
         data = _data
         sums['p12'] += count_active(_data)
-        if pattern:
-            matches = match(pattern)
-            if matches:
-                part_3.append(i)
-                c = count_active(_data)
-                sums['p3'] += c
-                if len(part_3) >= 2:
-                    diff = (part_3[-1] - part_3[-2], c)
-                    if diff not in diffs:
-                        diffs.append((part_3[-1] - part_3[-2], c))
-                    else:
-                        done = True
-                if done:
-                    diff_cycle = itertools.cycle(d[0] for d in diffs)
-                    count_cycle = itertools.cycle(d[1] for d in diffs)
-                    next(diff_cycle)  # We already counted the first one above
-                    next(count_cycle)
-                    while i < rounds:
-                        i += next(diff_cycle)
-                        if i < rounds:
-                            sums['p3'] += next(count_cycle)
-                    return sums
-        i += 1
+        if pattern and match():
+            part_3.append(i)
+            c = count_active(_data)
+            sums['p3'] += c
+            if len(part_3) >= 2:
+                diff = (part_3[-1] - part_3[-2], c)
+                if diff not in diffs:
+                    diffs.append(diff)
+                else:
+                    done = True
+            if done:
+                diff_cycle = itertools.cycle(d[0] for d in diffs)
+                count_cycle = itertools.cycle(d[1] for d in diffs)
+                next(diff_cycle)  # We already counted the first one above
+                next(count_cycle)
+                while i < rounds:
+                    i += next(diff_cycle)
+                    sums['p3'] += next(count_cycle) if i < rounds else 0
+                return sums
     return sums
 
 data = open('inputs/14_1.txt').read().split('\n')
