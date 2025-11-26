@@ -8,19 +8,16 @@ def get_factors(data):
     step = 1
     while sum(data) > 0:
         is_factor = True
+        indexes = []
         for i in range(step - 1, len(data), step):
-            if i < len(data):
-                v = data[i]
-                if not v:
-                    is_factor = False
-                    break
-            else:
+            indexes.append(i)
+            if not data[i]:
+                is_factor = False
                 break
         if is_factor:
             factors.append(step)
-            for i in range(step - 1, len(data), step):
-                if i < len(data):
-                    data[i] -= 1 if data[i] else 0
+            for i in indexes:
+                data[i] -= 1 if data[i] else 0
         step += 1
     return factors
 
